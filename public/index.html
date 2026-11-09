@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>EM-TempMail — Premium Disposable Temporary Email</title>
-  <meta name="description" content="Instant, secure, disposable email service with custom subdomains, 30-day extended validity, and HTML/Plain-text dual viewing." />
+  <meta name="description" content="Instant, secure, disposable email service with instant custom username, 30-day extended validity, and HTML/Plain-text dual viewing." />
   <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z'/><path d='M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z'/></svg>">
   
   <!-- Tailwind CSS CDN -->
@@ -34,55 +34,84 @@
   </script>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
     
-    /* Smooth transitions */
     * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
     
-    /* Glassmorphic Cards */
+    /* Glassmorphism Classes */
     .glass-card {
       background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
     }
     .dark .glass-card {
-      background: rgba(15, 23, 42, 0.75);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      background: rgba(15, 23, 42, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
     }
 
-    /* Glow highlights */
     .glow-brand {
-      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+      box-shadow: 0 0 35px -5px rgba(99, 102, 241, 0.3);
     }
 
-    /* Custom scrollbars */
+    /* Scrollbars */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
 
-    .ad-slot:empty { display: none }
-    .ad-slot iframe { border: 0; width: 100%; display: block }
+    .ad-slot:empty { display: none; }
+    .ad-slot iframe { border: 0; width: 100%; display: block; }
 
-    @keyframes pulse-slow {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.95); }
+    /* Moving Glowing Elements / Orbiting Orbs Animation */
+    @keyframes orbit-1 {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(70px, -90px) scale(1.15); }
+      66% { transform: translate(-50px, 60px) scale(0.9); }
+      100% { transform: translate(0px, 0px) scale(1); }
     }
-    .animate-pulse-slow { animation: pulse-slow 2s infinite ease-in-out; }
+    @keyframes orbit-2 {
+      0% { transform: translate(0px, 0px) scale(1); }
+      33% { transform: translate(-80px, 70px) scale(0.95); }
+      66% { transform: translate(60px, -50px) scale(1.2); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+    @keyframes orbit-3 {
+      0% { transform: translate(0px, 0px) rotate(0deg); }
+      50% { transform: translate(50px, 80px) rotate(180deg); }
+      100% { transform: translate(0px, 0px) rotate(360deg); }
+    }
+    @keyframes orbit-4 {
+      0% { transform: translate(0px, 0px) scale(1); }
+      50% { transform: translate(-60px, -70px) scale(1.1); }
+      100% { transform: translate(0px, 0px) scale(1); }
+    }
+
+    .animate-orbit-1 { animation: orbit-1 18s infinite ease-in-out; }
+    .animate-orbit-2 { animation: orbit-2 22s infinite ease-in-out; }
+    .animate-orbit-3 { animation: orbit-3 26s infinite linear; }
+    .animate-orbit-4 { animation: orbit-4 20s infinite ease-in-out; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans selection:bg-brand-500 selection:text-white relative overflow-x-hidden">
 
-  <!-- ==================== Ambient Background Gradients ==================== -->
-  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-    <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl"></div>
-    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-cyan-500/10 dark:bg-cyan-600/10 rounded-full blur-3xl"></div>
-    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-3xl"></div>
+  <!-- ==================== Dynamic Floating & Orbiting Ambient Elements ==================== -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10 select-none">
+    <!-- Glowing Orb Top-Left (Indigo) -->
+    <div class="absolute -top-24 -left-24 w-[28rem] h-[28rem] bg-indigo-500/25 dark:bg-indigo-600/25 rounded-full blur-[90px] animate-orbit-1"></div>
+    
+    <!-- Glowing Orb Top-Right (Cyan) -->
+    <div class="absolute top-10 -right-28 w-[26rem] h-[26rem] bg-cyan-400/25 dark:bg-cyan-500/20 rounded-full blur-[90px] animate-orbit-2"></div>
+    
+    <!-- Glowing Orb Center-Bottom (Purple/Violet) -->
+    <div class="absolute bottom-1/4 left-1/4 w-[30rem] h-[30rem] bg-purple-500/20 dark:bg-purple-600/20 rounded-full blur-[100px] animate-orbit-3"></div>
+    
+    <!-- Glowing Orb Bottom-Right (Emerald) -->
+    <div class="absolute -bottom-24 -right-20 w-[26rem] h-[26rem] bg-emerald-400/20 dark:bg-emerald-500/15 rounded-full blur-[90px] animate-orbit-4"></div>
   </div>
 
-  <!-- ==================== Premium Top Navigation ==================== -->
-  <header class="glass-card sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800/80">
+  <!-- ==================== Header ==================== -->
+  <header class="glass-card sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800/80 shadow-sm">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
       
       <!-- Brand Logo & Hidden Admin Trigger (Triple-click) -->
@@ -98,7 +127,6 @@
 
       <!-- Action Utilities & Theme Switcher -->
       <div class="flex items-center gap-2 sm:gap-3">
-        <!-- Topbar Social Platforms -->
         <div id="topbarSocials" class="hidden sm:flex items-center gap-2 text-xs font-medium"></div>
 
         <!-- Saved Inboxes Modal Trigger -->
@@ -123,14 +151,14 @@
     </div>
   </header>
 
-  <!-- ==================== Main Content Layout ==================== -->
+  <!-- ==================== Main Content ==================== -->
   <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
 
     <!-- Top Ad & Sponsor Slots -->
     <div id="slotTop" class="ad-slot flex justify-center"></div>
     <div id="slotSponsorTop" class="ad-slot flex justify-center"></div>
 
-    <!-- ==================== Primary Email Showcase Card ==================== -->
+    <!-- ==================== Primary Email Card ==================== -->
     <section class="glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-xl shadow-slate-200/50 dark:shadow-none p-5 sm:p-7 glow-brand">
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
         <div>
@@ -140,7 +168,7 @@
           </span>
         </div>
 
-        <!-- Expiration Countdown & Extender -->
+        <!-- Expiration Countdown & Selector -->
         <div class="flex items-center gap-2 text-xs">
           <span class="text-slate-500 dark:text-slate-400">Expires in:</span>
           <span id="countdown" class="font-mono font-bold text-slate-800 dark:text-white px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">30d 0h</span>
@@ -164,7 +192,7 @@
         </button>
       </div>
 
-      <!-- Secondary Action Buttons -->
+      <!-- Action Buttons -->
       <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 pt-2">
         <button id="btnOpenCustomModal" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm active:scale-95 transition">
           <span>🎨</span>
@@ -207,7 +235,6 @@
       <!-- Left Panel: Message List & Search Filter -->
       <div class="lg:col-span-5 glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 overflow-hidden flex flex-col shadow-md">
         
-        <!-- Header -->
         <div class="px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
           <div class="flex items-center gap-2">
             <h2 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-1.5">
@@ -218,7 +245,7 @@
           </div>
 
           <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
             <span>Auto-sync</span>
           </div>
         </div>
@@ -312,40 +339,6 @@
       </div>
     </section>
 
-    <!-- ==================== SaaS Features & Security Overview ==================== -->
-    <section class="glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 p-6 sm:p-8 shadow-sm">
-      <div class="text-center max-w-2xl mx-auto mb-8">
-        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Enterprise-Grade Temporary Email Protection</h3>
-        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Keep your primary inbox safe from data breaches, tracking pixels, spam, and promotional lists.</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30">
-          <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-xl mb-3">
-            🛡️
-          </div>
-          <h4 class="font-bold text-sm text-slate-900 dark:text-white">Strict Origin Privacy</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Runs securely on Cloudflare Edge with isolated D1 encryption. Origin headers and visitor IP metadata are protected.</p>
-        </div>
-
-        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30">
-          <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-xl mb-3">
-            ⏳
-          </div>
-          <h4 class="font-bold text-sm text-slate-900 dark:text-white">30-Day Extended Validity</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Access links persist for 30 full days by default, letting you verify accounts, receive OTPs, and return anytime.</p>
-        </div>
-
-        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30">
-          <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-xl mb-3">
-            🎨
-          </div>
-          <h4 class="font-bold text-sm text-slate-900 dark:text-white">Custom Subdomains</h4>
-          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Craft your exact customized temporary address with personalized prefixes and subdomains instantly.</p>
-        </div>
-      </div>
-    </section>
-
     <!-- Bottom Ad & Sponsor Slots -->
     <div id="slotSponsorBottom" class="ad-slot flex justify-center"></div>
     <div id="slotBottom" class="ad-slot flex justify-center"></div>
@@ -367,9 +360,9 @@
     </div>
   </footer>
 
-  <!-- ==================== MODAL: Custom Email Creation ==================== -->
-  <div id="modalCustomEmail" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-    <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5">
+  <!-- ==================== MODAL: Custom Email Creation (Clean - Subdomain Removed) ==================== -->
+  <div id="modalCustomEmail" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-md p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95 duration-150">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
           <span>🎨</span>
@@ -381,43 +374,62 @@
       <div class="space-y-4 text-xs sm:text-sm">
         <div>
           <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">1. Preferred Username / Prefix</label>
-          <input id="inputCustomUser" type="text" placeholder="e.g. johndoe or devtest" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500" />
+          <input id="inputCustomUser" type="text" placeholder="e.g. mahim or devtest" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/90 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20" />
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">2. Optional Subdomain</label>
-            <input id="inputCustomSubdomain" type="text" placeholder="e.g. news, bot, mail" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500" />
-          </div>
-
-          <div>
-            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">3. Base Domain</label>
-            <select id="selectBaseDomain" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500"></select>
-          </div>
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">2. Select Domain</label>
+          <select id="selectBaseDomain" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/90 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500"></select>
         </div>
 
-        <!-- Live Preview -->
-        <div class="p-3.5 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-900/60">
-          <span class="block text-[11px] font-semibold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-1">Address Preview</span>
-          <div id="customAddressPreview" class="font-mono text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">
-            prefix@domain.com
+        <!-- High-Contrast Live Preview Box (Fixed Visibility) -->
+        <div class="p-4 rounded-xl bg-slate-900 dark:bg-black border border-slate-800 dark:border-slate-700 shadow-inner">
+          <span class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center gap-1.5">
+            <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+            Address Preview
+          </span>
+          <div id="customAddressPreview" class="font-mono text-sm sm:text-base font-bold text-emerald-400 truncate tracking-wide">
+            mahim@domain.com
           </div>
         </div>
       </div>
 
-      <div class="flex gap-2 pt-2">
+      <div class="flex gap-2.5 pt-2">
         <button data-close="modalCustomEmail" class="flex-1 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
           Cancel
         </button>
-        <button id="btnSubmitCustomEmail" class="flex-1 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md shadow-brand-500/20 active:scale-95 transition">
+        <button id="btnSubmitCustomEmail" class="flex-1 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md shadow-brand-500/25 active:scale-95 transition">
           ✨ Create & Activate
         </button>
       </div>
     </div>
   </div>
 
+  <!-- ==================== MODAL: Custom Delete Confirmation Notice Dialog ==================== -->
+  <div id="modalDeleteConfirm" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+    <div class="glass-card bg-white dark:bg-slate-900 border border-red-200/60 dark:border-red-900/60 rounded-2xl w-full max-w-sm p-6 shadow-2xl text-center space-y-4 animate-in fade-in zoom-in-95 duration-150">
+      <div class="w-14 h-14 mx-auto rounded-2xl bg-red-100 dark:bg-red-950/70 border border-red-200 dark:border-red-800/60 flex items-center justify-center text-3xl">
+        ⚠️
+      </div>
+      <div>
+        <h4 class="font-bold text-base text-slate-900 dark:text-white">Delete This Inbox?</h4>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+          This will permanently purge this temporary email address and all incoming messages. This action cannot be reversed.
+        </p>
+      </div>
+      <div class="flex gap-2 pt-2">
+        <button data-close="modalDeleteConfirm" class="flex-1 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          Cancel
+        </button>
+        <button id="btnConfirmDeleteFinal" class="flex-1 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white font-semibold text-xs shadow-md shadow-red-500/25 active:scale-95 transition">
+          Yes, Delete Now
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ==================== MODAL: Saved Inboxes ==================== -->
-  <div id="modalSavedInboxes" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="modalSavedInboxes" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
@@ -436,7 +448,7 @@
   </div>
 
   <!-- ==================== MODAL: Access Link Recovery ==================== -->
-  <div id="modalRecover" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="modalRecover" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
       <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
         <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
@@ -448,7 +460,7 @@
 
       <div>
         <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Paste Access URL or Token</label>
-        <textarea id="recoverInput" rows="3" placeholder="https://temone.skin/?mail=...&token=... or access token" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500"></textarea>
+        <textarea id="recoverInput" rows="3" placeholder="https://yourdomain/?mail=...&token=... or access token" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500"></textarea>
       </div>
 
       <button id="btnSubmitRecover" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md shadow-brand-500/20 active:scale-95 transition">
@@ -458,7 +470,7 @@
   </div>
 
   <!-- ==================== MODAL: Admin Settings (Secret Panel) ==================== -->
-  <div id="modalAdmin" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+  <div id="modalAdmin" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
     <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
       <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
         <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
@@ -556,7 +568,7 @@
     </div>
   </div>
 
-  <!-- Toast Notification Container -->
+  <!-- Toast Notification -->
   <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 text-xs sm:text-sm font-semibold px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-md border border-slate-800 dark:border-slate-200">
     <span id="toastIcon">✨</span>
     <span id="toastMsg">Notification message</span>
@@ -582,7 +594,7 @@
   let selectedId = null;
   let pollTimer = null;
   let popunderLoaded = false;
-  let currentViewMode = 'html'; // 'html' or 'plain'
+  let currentViewMode = 'html';
 
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
     '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
@@ -732,10 +744,10 @@
     try {
       const data = await api('/api/settings');
       settings = data.settings || {};
-      domains = data.domains || [data.domain || 'temone.skin'];
+      domains = data.domains || [data.domain || 'trysortmail.co'];
     } catch {
       settings = {};
-      domains = ['temone.skin'];
+      domains = ['trysortmail.co'];
     }
     $('siteName').textContent = settings.site_name || 'EM-TempMail';
     document.title = (settings.site_name || 'EM-TempMail') + ' — Disposable Temporary Email';
@@ -789,13 +801,12 @@
     return '24h';
   }
 
-  async function createNew(customPrefix = '', customSubdomain = '', chosenDomain = '') {
+  async function createNew(customPrefix = '', chosenDomain = '') {
     const payload = {
       validity: $('validitySelect').value || '30d',
       domain: chosenDomain || $('selectBaseDomain').value,
     };
     if (customPrefix) payload.prefix = customPrefix;
-    if (customSubdomain) payload.subdomain = customSubdomain;
 
     const data = await api('/api/create', { method: 'POST', body: payload });
     setInbox(data);
@@ -856,7 +867,6 @@
     $('vTo').textContent = msg.recipient || inbox.address;
     $('vDate').textContent = fmtDate(msg.received_at);
 
-    // Frame styling
     $('vFrame').srcdoc = `<!doctype html><html><head><base target="_blank"><meta charset="utf-8">
       <style>
         body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; color: #1e293b; margin: 16px; word-wrap: break-word; line-height: 1.6; }
@@ -913,21 +923,18 @@
   const openModal = (id) => $(id).classList.remove('hidden');
   const closeModal = (id) => $(id).classList.add('hidden');
   document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => closeModal(b.dataset.close)));
-  ['modalCustomEmail', 'modalSavedInboxes', 'modalRecover', 'modalAdmin'].forEach((id) => {
+  ['modalCustomEmail', 'modalDeleteConfirm', 'modalSavedInboxes', 'modalRecover', 'modalAdmin'].forEach((id) => {
     $(id).addEventListener('click', (e) => { if (e.target === $(id)) closeModal(id); });
   });
 
-  /* ---------------- Custom Subdomain Preview & Creation ---------------- */
+  /* ---------------- Custom Email Preview & Creation ---------------- */
   function updateCustomPreview() {
-    const user = ($('inputCustomUser').value || '').trim() || 'myaccount';
-    const sub = ($('inputCustomSubdomain').value || '').trim().replace(/[^a-z0-9-]/gi, '');
-    const base = $('selectBaseDomain').value || (domains[0] || 'temone.skin');
-    const domainPart = sub ? `${sub}.${base}` : base;
-    $('customAddressPreview').textContent = `${user}@${domainPart}`.toLowerCase();
+    const user = ($('inputCustomUser').value || '').trim() || 'username';
+    const base = $('selectBaseDomain').value || (domains[0] || 'trysortmail.co');
+    $('customAddressPreview').textContent = `${user}@${base}`.toLowerCase();
   }
 
   $('inputCustomUser').oninput = updateCustomPreview;
-  $('inputCustomSubdomain').oninput = updateCustomPreview;
   $('selectBaseDomain').onchange = updateCustomPreview;
 
   $('btnOpenCustomModal').onclick = () => {
@@ -937,14 +944,29 @@
 
   $('btnSubmitCustomEmail').onclick = async () => {
     const user = ($('inputCustomUser').value || '').trim();
-    const sub = ($('inputCustomSubdomain').value || '').trim();
     const base = $('selectBaseDomain').value;
 
     if (!user) { toast('Please specify a username', '⚠️'); return; }
     try {
-      await createNew(user, sub, base);
+      await createNew(user, base);
       closeModal('modalCustomEmail');
-      toast('Custom email created successfully', '🎨');
+      toast('Custom email activated', '🎨');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  /* ---------------- Custom Modal Delete Inbox ---------------- */
+  $('btnDeleteInbox').onclick = () => {
+    if (!inbox) return;
+    openModal('modalDeleteConfirm');
+  };
+
+  $('btnConfirmDeleteFinal').onclick = async () => {
+    closeModal('modalDeleteConfirm');
+    triggerPopunder();
+    try {
+      await api(`/api/inbox?address=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}`, { method: 'DELETE' });
+      await createNew();
+      toast('Inbox permanently deleted', '🗑️');
     } catch (e) { toast(e.message, '⚠️'); }
   };
 
@@ -1044,16 +1066,6 @@
     try {
       await createNew();
       toast('New random temporary email generated', '✨');
-    } catch (e) { toast(e.message, '⚠️'); }
-  };
-
-  $('btnDeleteInbox').onclick = async () => {
-    if (!inbox || !confirm('Permanently delete this inbox and all incoming messages now?')) return;
-    triggerPopunder();
-    try {
-      await api(`/api/inbox?address=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}`, { method: 'DELETE' });
-      await createNew();
-      toast('Inbox permanently deleted', '🗑️');
     } catch (e) { toast(e.message, '⚠️'); }
   };
 
