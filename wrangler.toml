@@ -8,7 +8,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Public environment variables (comma-separated list of active domains)
 [vars]
-DOMAIN = "temone.skin"
+DOMAIN = "trysortmail.co"
 
 # SPA Static Assets Configuration
 [assets]
@@ -18,8 +18,8 @@ binding = "ASSETS"
 # D1 Database Binding
 [[d1_databases]]
 binding = "DB"
-database_name = "temone-tempmail"
-database_id = "2d52e7c5-7ca8-42a9-be52-a78081c51928"
+database_name = "trysortmail"
+database_id = "a6a272e1-35de-4dbd-91b5-a5b92c377002"
 
 # Scheduled Cleanup Task (Runs daily at 03:00 UTC)
 [triggers]
