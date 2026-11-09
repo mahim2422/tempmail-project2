@@ -1,0 +1,26 @@
+# =============================================================
+# wrangler.toml — Temp Mail on Cloudflare Workers
+# =============================================================
+name = "temone-tempmail"
+main = "src/worker.js"
+compatibility_date = "2024-11-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Public environment variables (comma-separated list of active domains)
+[vars]
+DOMAIN = "temone.skin"
+
+# SPA Static Assets Configuration
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+# D1 Database Binding
+[[d1_databases]]
+binding = "DB"
+database_name = "temone-tempmail"
+database_id = "2d52e7c5-7ca8-42a9-be52-a78081c51928"
+
+# Scheduled Cleanup Task (Runs daily at 03:00 UTC)
+[triggers]
+crons = ["0 3 * * *"]
