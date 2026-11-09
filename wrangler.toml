@@ -8,7 +8,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Public environment variables (comma-separated list of active domains)
 [vars]
-DOMAIN = "trysortmail.co"
+DOMAIN = "trysortmail.co,ontem.fit"
 
 # SPA Static Assets Configuration
 [assets]
