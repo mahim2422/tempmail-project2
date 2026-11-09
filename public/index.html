@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>EM-TempMail — Premium Disposable Temporary Email</title>
+  <meta name="description" content="Instant, secure, disposable email service with custom subdomains, 30-day extended validity, and HTML/Plain-text dual viewing." />
+  <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M1.5 8.67v8.58a3 3 0 003 3h15a3 3 0 003-3V8.67l-8.928 5.493a3 3 0 01-3.144 0L1.5 8.67z'/><path d='M22.5 6.908V6.75a3 3 0 00-3-3h-15a3 3 0 00-3 3v.158l9.714 5.978a1.5 1.5 0 001.572 0L22.5 6.908z'/></svg>">
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+            mono: ['JetBrains Mono', 'Fira Code', 'monospace'],
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+    
+    /* Smooth transitions */
+    * { transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease; }
+    
+    /* Glassmorphic Cards */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .dark .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    /* Glow highlights */
+    .glow-brand {
+      box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.35);
+    }
+
+    /* Custom scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.35); border-radius: 9999px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.6); }
+
+    .ad-slot:empty { display: none }
+    .ad-slot iframe { border: 0; width: 100%; display: block }
+
+    @keyframes pulse-slow {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.95); }
+    }
+    .animate-pulse-slow { animation: pulse-slow 2s infinite ease-in-out; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen flex flex-col font-sans selection:bg-brand-500 selection:text-white">
+
+  <!-- ==================== Ambient Background Gradients ==================== -->
+  <div class="fixed inset-0 pointer-events-none overflow-hidden -z-10">
+    <div class="absolute -top-40 -left-40 w-96 h-96 bg-indigo-500/10 dark:bg-indigo-600/15 rounded-full blur-3xl"></div>
+    <div class="absolute top-1/3 -right-40 w-96 h-96 bg-cyan-500/10 dark:bg-cyan-600/10 rounded-full blur-3xl"></div>
+    <div class="absolute -bottom-40 left-1/3 w-96 h-96 bg-emerald-500/10 dark:bg-emerald-600/10 rounded-full blur-3xl"></div>
+  </div>
+
+  <!-- ==================== Premium Top Navigation ==================== -->
+  <header class="glass-card sticky top-0 z-40 border-b border-slate-200/80 dark:border-slate-800/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+      
+      <!-- Brand Logo & Hidden Admin Trigger (Triple-click) -->
+      <div id="secretAdminTrigger" class="flex items-center gap-3 cursor-pointer select-none group" title="Triple click for Admin Settings">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md shadow-brand-500/20 group-hover:scale-105 transition-transform">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l9 6 9-6M5 6h14a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>
+        </div>
+        <div>
+          <span id="siteName" class="font-bold text-lg tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">EM-TempMail</span>
+          <span class="block text-[10px] uppercase font-semibold tracking-wider text-brand-600 dark:text-brand-400 -mt-1">Disposable Mail Pro</span>
+        </div>
+      </div>
+
+      <!-- Action Utilities & Theme Switcher -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Topbar Social Platforms -->
+        <div id="topbarSocials" class="hidden sm:flex items-center gap-2 text-xs font-medium"></div>
+
+        <!-- Saved Inboxes Modal Trigger -->
+        <button id="btnOpenSaved" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition">
+          <span>💾</span>
+          <span class="hidden md:inline">Saved Inboxes</span>
+          <span id="savedCountBadge" class="bg-brand-500 text-white rounded-full px-1.5 py-0.2 text-[10px] hidden">0</span>
+        </button>
+
+        <!-- Access Link Recovery -->
+        <button id="btnOpenRecover" class="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-xs font-semibold text-slate-700 dark:text-slate-200 transition">
+          <span>🔗</span>
+          <span class="hidden sm:inline">Recover</span>
+        </button>
+
+        <!-- Dark / Light Mode Toggle Button -->
+        <button id="themeToggle" aria-label="Toggle Theme" class="p-2 rounded-lg border border-slate-300 dark:border-slate-700 bg-white/60 dark:bg-slate-800/60 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-amber-400 transition">
+          <svg id="themeIconSun" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+          <svg id="themeIconMoon" class="w-4 h-4 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== Main Content Layout ==================== -->
+  <main class="flex-1 w-full max-w-6xl mx-auto px-4 sm:px-6 py-6 space-y-6">
+
+    <!-- Top Ad & Sponsor Slots -->
+    <div id="slotTop" class="ad-slot flex justify-center"></div>
+    <div id="slotSponsorTop" class="ad-slot flex justify-center"></div>
+
+    <!-- ==================== Primary Email Showcase Card ==================== -->
+    <section class="glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 shadow-xl shadow-slate-200/50 dark:shadow-none p-5 sm:p-7 glow-brand">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-3">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-brand-100 text-brand-700 dark:bg-brand-950/80 dark:text-brand-300 dark:border dark:border-brand-800">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+            Active Disposable Address
+          </span>
+        </div>
+
+        <!-- Expiration Countdown & Extender -->
+        <div class="flex items-center gap-2 text-xs">
+          <span class="text-slate-500 dark:text-slate-400">Expires in:</span>
+          <span id="countdown" class="font-mono font-bold text-slate-800 dark:text-white px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">30d 0h</span>
+          <select id="validitySelect" class="text-xs rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 px-2 py-1 outline-none font-medium">
+            <option value="30d" selected>30 Days (Default)</option>
+            <option value="7d">7 Days</option>
+            <option value="24h">24 Hours</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Live Email Input Box + Copy Button -->
+      <div class="relative flex flex-col md:flex-row items-stretch gap-2.5 my-3">
+        <div class="flex-1 flex items-center bg-slate-100/90 dark:bg-slate-900/90 border-2 border-slate-200 dark:border-slate-700/80 rounded-xl px-4 py-3 font-mono text-base sm:text-xl font-medium tracking-tight text-slate-900 dark:text-white overflow-hidden shadow-inner">
+          <input id="currentEmail" type="text" readonly class="w-full bg-transparent outline-none select-all truncate text-brand-600 dark:text-brand-400" value="generating@address.com" />
+        </div>
+
+        <button id="btnCopyAddress" class="flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-brand-600 to-indigo-600 hover:from-brand-700 hover:to-indigo-700 text-white font-semibold text-sm shadow-lg shadow-brand-500/25 active:scale-95 transition shrink-0">
+          <span>📋</span>
+          <span>Copy Email</span>
+        </button>
+      </div>
+
+      <!-- Secondary Action Buttons -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2 pt-2">
+        <button id="btnOpenCustomModal" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm active:scale-95 transition">
+          <span>🎨</span>
+          <span>Custom Mail</span>
+        </button>
+
+        <button id="btnNewRandom" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm active:scale-95 transition">
+          <span>✨</span>
+          <span>Random Mail</span>
+        </button>
+
+        <button id="btnCopyAccessLink" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm active:scale-95 transition">
+          <span>🔗</span>
+          <span>Copy Link</span>
+        </button>
+
+        <button id="btnSaveCurrent" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm active:scale-95 transition">
+          <span>💾</span>
+          <span>Save Inbox</span>
+        </button>
+
+        <button id="btnRefreshInbox" class="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800/80 hover:bg-slate-50 dark:hover:bg-slate-700/60 text-xs font-semibold text-slate-700 dark:text-slate-200 shadow-sm active:scale-95 transition">
+          <span id="refreshSpinner" class="inline-block">🔄</span>
+          <span>Refresh</span>
+        </button>
+
+        <button id="btnDeleteInbox" class="col-span-2 sm:col-span-1 flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-red-200 dark:border-red-900/60 bg-red-50/50 dark:bg-red-950/30 hover:bg-red-100 dark:hover:bg-red-900/50 text-xs font-semibold text-red-600 dark:text-red-400 active:scale-95 transition">
+          <span>🗑️</span>
+          <span>Delete</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Native Ad Slot -->
+    <div id="slotNative" class="ad-slot"></div>
+
+    <!-- ==================== Inbox Workspace & Message Viewer ==================== -->
+    <section class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-start">
+      
+      <!-- Left Panel: Message List & Search Filter -->
+      <div class="lg:col-span-5 glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 overflow-hidden flex flex-col shadow-md">
+        
+        <!-- Header -->
+        <div class="px-4 py-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-900/40">
+          <div class="flex items-center gap-2">
+            <h2 class="font-bold text-sm text-slate-800 dark:text-white flex items-center gap-1.5">
+              <span>📥</span>
+              <span>Inbox</span>
+            </h2>
+            <span id="msgCountBadge" class="text-xs px-2 py-0.5 rounded-full font-bold bg-brand-100 text-brand-700 dark:bg-brand-950 dark:text-brand-300">0</span>
+          </div>
+
+          <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse-slow"></span>
+            <span>Auto-sync</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Filter Search Input -->
+        <div class="p-2 border-b border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/20">
+          <div class="relative flex items-center">
+            <span class="absolute left-3 text-slate-400 text-xs">🔍</span>
+            <input id="searchFilter" type="text" placeholder="Filter messages by subject or sender..." class="w-full pl-8 pr-3 py-1.5 text-xs rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 outline-none focus:border-brand-500" />
+          </div>
+        </div>
+
+        <!-- Message List -->
+        <ul id="msgList" class="divide-y divide-slate-100 dark:divide-slate-800/80 max-h-[30rem] overflow-y-auto"></ul>
+
+        <!-- Empty State -->
+        <div id="inboxEmptyState" class="p-10 text-center flex flex-col items-center justify-center my-auto">
+          <div class="w-14 h-14 rounded-full bg-brand-50 dark:bg-brand-950/60 border border-brand-100 dark:border-brand-900/60 flex items-center justify-center text-2xl mb-3 animate-pulse">
+            📬
+          </div>
+          <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">Your inbox is waiting</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs">Send an email to this address and it will appear here automatically within seconds.</p>
+        </div>
+      </div>
+
+      <!-- Right Panel: Message Viewer (Dual HTML & Plain Text) -->
+      <div class="lg:col-span-7 glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 overflow-hidden min-h-[34rem] flex flex-col shadow-md">
+        
+        <!-- Viewer Empty State -->
+        <div id="viewerEmpty" class="flex-1 flex flex-col items-center justify-center p-12 text-center my-auto">
+          <div class="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-3xl mb-3">
+            ✉️
+          </div>
+          <p class="text-base font-semibold text-slate-700 dark:text-slate-200">No message selected</p>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Select an email from the list on the left to read its content.</p>
+        </div>
+
+        <!-- Viewer Active State -->
+        <div id="viewerActive" class="hidden flex-1 flex flex-col h-full">
+          <!-- Message Header & Metadata -->
+          <div class="p-4 sm:p-5 border-b border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/40">
+            <div class="flex items-start justify-between gap-3 mb-2">
+              <h3 id="vSubject" class="font-bold text-base sm:text-lg text-slate-900 dark:text-white break-words leading-tight"></h3>
+              
+              <div class="flex items-center gap-2 shrink-0">
+                <button id="btnDeleteCurrentMsg" class="flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-lg border border-red-200 dark:border-red-900 text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 transition">
+                  <span>🗑️</span>
+                  <span class="hidden sm:inline">Delete</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="space-y-1 text-xs text-slate-600 dark:text-slate-400">
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-500 dark:text-slate-500 w-12">From:</span>
+                <span id="vFrom" class="font-mono text-slate-800 dark:text-slate-200 break-all select-all"></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-500 dark:text-slate-500 w-12">To:</span>
+                <span id="vTo" class="font-mono text-slate-800 dark:text-slate-200 break-all select-all"></span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class="font-semibold text-slate-500 dark:text-slate-500 w-12">Date:</span>
+                <span id="vDate" class="text-slate-700 dark:text-slate-300"></span>
+              </div>
+            </div>
+
+            <!-- View Switcher Tabs: HTML vs Plain Text -->
+            <div class="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between">
+              <div class="inline-flex p-1 rounded-xl bg-slate-200/80 dark:bg-slate-800 text-xs font-semibold">
+                <button id="tabHtmlView" class="px-3 py-1 rounded-lg bg-white dark:bg-brand-600 text-brand-700 dark:text-white shadow-sm transition">
+                  🌐 HTML View
+                </button>
+                <button id="tabPlainView" class="px-3 py-1 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition">
+                  📝 Plain Text
+                </button>
+              </div>
+
+              <span class="text-[11px] text-slate-400 dark:text-slate-500 hidden sm:inline">🛡️ Sandboxed Security Enabled</span>
+            </div>
+          </div>
+
+          <!-- HTML Sandboxed Frame Container -->
+          <div id="containerHtmlView" class="flex-1 bg-white relative min-h-[22rem]">
+            <iframe id="vFrame" sandbox="allow-popups allow-popups-to-escape-sandbox" class="w-full h-full min-h-[22rem] border-0"></iframe>
+          </div>
+
+          <!-- Plain Text View Container -->
+          <div id="containerPlainView" class="hidden flex-1 p-5 bg-slate-50 dark:bg-slate-950 font-mono text-xs sm:text-sm text-slate-800 dark:text-slate-200 overflow-y-auto whitespace-pre-wrap select-text leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SaaS Features & Security Overview ==================== -->
+    <section class="glass-card rounded-2xl border border-slate-200/90 dark:border-slate-800/90 p-6 sm:p-8 shadow-sm">
+      <div class="text-center max-w-2xl mx-auto mb-8">
+        <h3 class="text-xl font-bold text-slate-900 dark:text-white">Enterprise-Grade Temporary Email Protection</h3>
+        <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Keep your primary inbox safe from data breaches, tracking pixels, spam, and promotional lists.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30">
+          <div class="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-800 flex items-center justify-center text-xl mb-3">
+            🛡️
+          </div>
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white">Strict Origin Privacy</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Runs securely on Cloudflare Edge with isolated D1 encryption. Origin headers and visitor IP metadata are protected.</p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30">
+          <div class="w-10 h-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800 flex items-center justify-center text-xl mb-3">
+            ⏳
+          </div>
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white">30-Day Extended Validity</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Access links persist for 30 full days by default, letting you verify accounts, receive OTPs, and return anytime.</p>
+        </div>
+
+        <div class="p-5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/30">
+          <div class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800 flex items-center justify-center text-xl mb-3">
+            🎨
+          </div>
+          <h4 class="font-bold text-sm text-slate-900 dark:text-white">Custom Subdomains</h4>
+          <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">Craft your exact customized temporary address with personalized prefixes and subdomains instantly.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Bottom Ad & Sponsor Slots -->
+    <div id="slotSponsorBottom" class="ad-slot flex justify-center"></div>
+    <div id="slotBottom" class="ad-slot flex justify-center"></div>
+  </main>
+
+  <!-- ==================== Footer ==================== -->
+  <footer class="border-t border-slate-200 dark:border-slate-800/80 bg-white/70 dark:bg-slate-950/70 mt-auto py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <div>
+        <p>© 2026 <strong class="text-slate-700 dark:text-slate-200">EM-TempMail</strong>. All rights reserved.</p>
+        <p class="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">Disposable email for privacy verification. Do not use for banking or sensitive credentials.</p>
+      </div>
+
+      <div class="flex items-center gap-4 text-xs font-medium">
+        <span id="poweredContainer">
+          Powered by <a href="https://t.me/earnmastermind" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 hover:underline">Earnmaster Mind</a>
+        </span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL: Custom Email Creation ==================== -->
+  <div id="modalCustomEmail" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-5">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <span>🎨</span>
+          <span>Create Custom Email Address</span>
+        </h3>
+        <button data-close="modalCustomEmail" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl leading-none">&times;</button>
+      </div>
+
+      <div class="space-y-4 text-xs sm:text-sm">
+        <div>
+          <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">1. Preferred Username / Prefix</label>
+          <input id="inputCustomUser" type="text" placeholder="e.g. johndoe or devtest" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">2. Optional Subdomain</label>
+            <input id="inputCustomSubdomain" type="text" placeholder="e.g. news, bot, mail" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500" />
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 dark:text-slate-300 mb-1">3. Base Domain</label>
+            <select id="selectBaseDomain" class="w-full px-3 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500"></select>
+          </div>
+        </div>
+
+        <!-- Live Preview -->
+        <div class="p-3.5 rounded-xl bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-900/60">
+          <span class="block text-[11px] font-semibold text-brand-600 dark:text-brand-400 uppercase tracking-wider mb-1">Address Preview</span>
+          <div id="customAddressPreview" class="font-mono text-sm sm:text-base font-bold text-slate-900 dark:text-white truncate">
+            prefix@domain.com
+          </div>
+        </div>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button data-close="modalCustomEmail" class="flex-1 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 font-semibold text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          Cancel
+        </button>
+        <button id="btnSubmitCustomEmail" class="flex-1 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md shadow-brand-500/20 active:scale-95 transition">
+          ✨ Create & Activate
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: Saved Inboxes ==================== -->
+  <div id="modalSavedInboxes" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <span>💾</span>
+          <span>Your Saved Inboxes</span>
+        </h3>
+        <button data-close="modalSavedInboxes" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl leading-none">&times;</button>
+      </div>
+
+      <ul id="savedInboxesList" class="divide-y divide-slate-100 dark:divide-slate-800 max-h-72 overflow-y-auto"></ul>
+
+      <div id="savedEmptyState" class="py-8 text-center text-xs text-slate-400 hidden">
+        No saved inboxes yet. Click "Save Inbox" on any email to access it quickly later.
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: Access Link Recovery ==================== -->
+  <div id="modalRecover" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-lg p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <h3 class="font-bold text-base text-slate-900 dark:text-white flex items-center gap-2">
+          <span>🔗</span>
+          <span>Recover Inbox by Access Link</span>
+        </h3>
+        <button data-close="modalRecover" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-xl leading-none">&times;</button>
+      </div>
+
+      <div>
+        <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Paste Access URL or Token</label>
+        <textarea id="recoverInput" rows="3" placeholder="https://temone.skin/?mail=...&token=... or access token" class="w-full px-3 py-2 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 font-mono text-slate-900 dark:text-white outline-none focus:border-brand-500"></textarea>
+      </div>
+
+      <button id="btnSubmitRecover" class="w-full py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md shadow-brand-500/20 active:scale-95 transition">
+        Restore Inbox
+      </button>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL: Admin Settings (Secret Panel) ==================== -->
+  <div id="modalAdmin" class="hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="glass-card bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 shadow-2xl">
+      <div class="flex justify-between items-center mb-4 pb-2 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="font-bold text-lg text-slate-900 dark:text-white flex items-center gap-2">
+          <span>⚙️</span>
+          <span>Admin Configuration & Monetization</span>
+        </h3>
+        <button data-close="modalAdmin" class="text-slate-400 hover:text-slate-600 dark:hover:text-white text-2xl leading-none">&times;</button>
+      </div>
+
+      <div class="flex gap-2 mb-4">
+        <input id="aSecret" type="password" placeholder="Enter ADMIN_SECRET" class="flex-1 border border-slate-300 dark:border-slate-700 rounded-xl px-3 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white outline-none focus:border-brand-500 font-mono" />
+        <button id="btnAdminLoad" class="px-5 py-2 rounded-xl bg-brand-600 text-white text-xs font-semibold hover:bg-brand-700 transition">Unlock</button>
+      </div>
+      <p id="aError" class="text-xs text-red-600 hidden mb-3"></p>
+
+      <form id="formAdmin" class="space-y-4 hidden border-t border-slate-100 dark:border-slate-800 pt-4">
+        <p id="aStats" class="text-xs font-semibold text-brand-600 dark:text-brand-400 bg-brand-50 dark:bg-brand-950/60 p-3 rounded-xl border border-brand-200 dark:border-brand-900/60"></p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Site Name</label>
+            <input data-key="site_name" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Ads Enabled (1 / 0)</label>
+            <input data-key="ads_enabled" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Popunder Cooldown (sec)</label>
+            <input data-key="popunder_cooldown" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Powered By Name</label>
+            <input data-key="powered_name" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white" />
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Powered By Link</label>
+            <input data-key="powered_link" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs bg-white dark:bg-slate-800 text-slate-900 dark:text-white" />
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Social Platforms (JSON format)</label>
+          <textarea data-key="social_platforms" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Adsterra Popunder Script</label>
+          <textarea data-key="ad_popunder" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Adsterra Direct Link URL</label>
+          <input data-key="ad_direct_link" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white" />
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Sponsor Top (HTML)</label>
+            <textarea data-key="sponsor_top" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Sponsor Bottom (HTML)</label>
+            <textarea data-key="sponsor_bottom" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Top Banner Ad</label>
+          <textarea data-key="ad_banner_top" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Native Middle Ad</label>
+          <textarea data-key="ad_native" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Bottom Banner Ad</label>
+          <textarea data-key="ad_banner_bottom" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-700 dark:text-slate-300">Social Bar Script</label>
+          <textarea data-key="ad_social_bar" rows="2" class="w-full mt-1 border border-slate-300 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono bg-white dark:bg-slate-800 text-slate-900 dark:text-white"></textarea>
+        </div>
+
+        <button class="w-full py-3 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs shadow-md transition">
+          Save Settings
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast" class="hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-slate-900/95 dark:bg-white/95 text-white dark:text-slate-900 text-xs sm:text-sm font-semibold px-5 py-3 rounded-2xl shadow-2xl backdrop-blur-md border border-slate-800 dark:border-slate-200">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">Notification message</span>
+  </div>
+
+<!-- ==================== Application Logic ==================== -->
+<script>
+(() => {
+  'use strict';
+
+  const $ = (id) => document.getElementById(id);
+  const LS_INBOX = 'tm_inbox';
+  const LS_SAVED = 'tm_saved_inboxes';
+  const LS_POP = 'tm_last_popunder';
+  const LS_THEME = 'tm_theme';
+  const POLL_MS = 8000;
+
+  let settings = {};
+  let domains = [];
+  let inbox = null;
+  let messages = [];
+  let currentMsg = null;
+  let selectedId = null;
+  let pollTimer = null;
+  let popunderLoaded = false;
+  let currentViewMode = 'html'; // 'html' or 'plain'
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[c]));
+
+  function toast(msg, icon = '✨') {
+    const t = $('toast');
+    $('toastIcon').textContent = icon;
+    $('toastMsg').textContent = msg;
+    t.classList.remove('hidden');
+    clearTimeout(toast._t);
+    toast._t = setTimeout(() => t.classList.add('hidden'), 2500);
+  }
+
+  /* ---------------------- Theme System ---------------------- */
+  function initTheme() {
+    let saved = localStorage.getItem(LS_THEME);
+    if (!saved) {
+      saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    applyTheme(saved);
+  }
+
+  function applyTheme(theme) {
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+      $('themeIconSun').classList.remove('hidden');
+      $('themeIconMoon').classList.add('hidden');
+    } else {
+      document.documentElement.classList.remove('dark');
+      $('themeIconSun').classList.add('hidden');
+      $('themeIconMoon').classList.remove('hidden');
+    }
+    localStorage.setItem(LS_THEME, theme);
+  }
+
+  $('themeToggle').onclick = () => {
+    const isDark = document.documentElement.classList.contains('dark');
+    applyTheme(isDark ? 'light' : 'dark');
+  };
+
+  /* ----------------------- API Client ----------------------- */
+  async function api(path, { method = 'GET', body, admin } = {}) {
+    const headers = {};
+    if (body) headers['Content-Type'] = 'application/json';
+    if (admin) headers['X-Admin-Secret'] = admin;
+    const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+    let data = {};
+    try { data = await res.json(); } catch {}
+    if (!res.ok) throw new Error(data.error || `Request failed (${res.status})`);
+    return data;
+  }
+
+  async function copyText(text, okMsg) {
+    try {
+      await navigator.clipboard.writeText(text);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    toast(okMsg, '📋');
+  }
+
+  const accessUrl = () => `${location.origin}/?mail=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}`;
+
+  function fmtDate(ms) { return new Date(ms).toLocaleString(); }
+  function fmtRemaining(ms) {
+    if (ms <= 0) return 'expired';
+    const s = Math.floor(ms / 1000);
+    const d = Math.floor(s / 86400), h = Math.floor((s % 86400) / 3600), m = Math.floor((s % 3600) / 60);
+    return d ? `${d}d ${h}h` : h ? `${h}h ${m}m` : `${m}m ${s % 60}s`;
+  }
+
+  const adsOn = () => settings.ads_enabled !== '0';
+
+  function injectScripts(html, parent) {
+    const range = document.createRange();
+    range.selectNode(parent);
+    parent.appendChild(range.createContextualFragment(html));
+  }
+
+  function renderSlot(slotId, code) {
+    const slot = $(slotId);
+    if (!slot) return;
+    slot.innerHTML = '';
+    if (!code || !code.trim()) return;
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('scrolling', 'no');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox');
+    iframe.style.height = '100px';
+    iframe.srcdoc = `<!doctype html><html><body style="margin:0;display:flex;justify-content:center">${code}</body></html>`;
+    const resize = () => {
+      try {
+        const h = iframe.contentDocument.documentElement.scrollHeight;
+        if (h > 20) iframe.style.height = h + 'px';
+      } catch {}
+    };
+    iframe.addEventListener('load', () => {
+      let n = 0;
+      const iv = setInterval(() => { resize(); if (++n > 20) clearInterval(iv); }, 500);
+    });
+    slot.appendChild(iframe);
+  }
+
+  function renderAds() {
+    renderSlot('slotTop', adsOn() ? settings.ad_banner_top : '');
+    renderSlot('slotNative', adsOn() ? settings.ad_native : '');
+    renderSlot('slotBottom', adsOn() ? settings.ad_banner_bottom : '');
+    renderSlot('slotSponsorTop', settings.sponsor_top);
+    renderSlot('slotSponsorBottom', settings.sponsor_bottom);
+
+    if (adsOn() && settings.ad_social_bar && !document.getElementById('socialBarHost')) {
+      const host = document.createElement('div');
+      host.id = 'socialBarHost';
+      document.body.appendChild(host);
+      injectScripts(settings.ad_social_bar, host);
+    }
+  }
+
+  function triggerPopunder() {
+    if (!adsOn()) return;
+    const cooldown = (parseInt(settings.popunder_cooldown, 10) || 60) * 1000;
+    let last = 0;
+    try { last = Number(localStorage.getItem(LS_POP)) || 0; } catch {}
+    if (Date.now() - last < cooldown) return;
+
+    let fired = false;
+    if (settings.ad_popunder && settings.ad_popunder.trim() && !popunderLoaded) {
+      popunderLoaded = true;
+      const host = document.createElement('div');
+      document.body.appendChild(host);
+      injectScripts(settings.ad_popunder, host);
+      fired = true;
+    }
+    if (settings.ad_direct_link && /^https?:\/\//i.test(settings.ad_direct_link.trim())) {
+      window.open(settings.ad_direct_link.trim(), '_blank', 'noopener');
+      fired = true;
+    }
+    if (fired) { try { localStorage.setItem(LS_POP, String(Date.now())); } catch {} }
+  }
+
+  async function loadSettings() {
+    try {
+      const data = await api('/api/settings');
+      settings = data.settings || {};
+      domains = data.domains || [data.domain || 'temone.skin'];
+    } catch {
+      settings = {};
+      domains = ['temone.skin'];
+    }
+    $('siteName').textContent = settings.site_name || 'EM-TempMail';
+    document.title = (settings.site_name || 'EM-TempMail') + ' — Disposable Temporary Email';
+
+    const sel = $('selectBaseDomain');
+    sel.innerHTML = domains.map(d => `<option value="${esc(d)}">@${esc(d)}</option>`).join('');
+
+    const pName = settings.powered_name || 'Earnmaster Mind';
+    const pLink = settings.powered_link || 'https://t.me/earnmastermind';
+    $('poweredContainer').innerHTML = `Powered by <a href="${esc(pLink)}" target="_blank" rel="noopener" class="text-brand-600 dark:text-brand-400 hover:underline">${esc(pName)}</a>`;
+
+    const socialsDiv = $('topbarSocials');
+    socialsDiv.innerHTML = '';
+    try {
+      const parsedSocials = JSON.parse(settings.social_platforms || '[]');
+      if (Array.isArray(parsedSocials)) {
+        socialsDiv.innerHTML = parsedSocials.map(s => `
+          <a href="${esc(s.url)}" target="_blank" rel="noopener" class="px-2 py-1 rounded-lg border border-slate-300 dark:border-slate-700 hover:text-brand-600 transition font-medium">${esc(s.name)}</a>
+        `).join('');
+      }
+    } catch {}
+
+    updateCustomPreview();
+    renderAds();
+  }
+
+  function saveInbox() { try { localStorage.setItem(LS_INBOX, JSON.stringify(inbox)); } catch {} }
+
+  function setInbox(data) {
+    inbox = { address: data.address, token: data.token, expires_at: data.expires_at };
+    saveInbox();
+    selectedId = null;
+    currentMsg = null;
+    messages = [];
+
+    $('currentEmail').value = inbox.address;
+    $('validitySelect').value = guessValidity(inbox.expires_at);
+
+    history.replaceState(null, '', accessUrl());
+    renderList();
+    showViewer(null);
+    updateCountdown();
+    startPolling();
+    updateSavedBadge();
+  }
+
+  function guessValidity(expiresAt) {
+    const left = expiresAt - Date.now();
+    if (left > 8 * 86400000) return '30d';
+    if (left > 25 * 3600000) return '7d';
+    return '24h';
+  }
+
+  async function createNew(customPrefix = '', customSubdomain = '', chosenDomain = '') {
+    const payload = {
+      validity: $('validitySelect').value || '30d',
+      domain: chosenDomain || $('selectBaseDomain').value,
+    };
+    if (customPrefix) payload.prefix = customPrefix;
+    if (customSubdomain) payload.subdomain = customSubdomain;
+
+    const data = await api('/api/create', { method: 'POST', body: payload });
+    setInbox(data);
+  }
+
+  async function restore(address, token) {
+    const data = await api('/api/recover', { method: 'POST', body: { address, token } });
+    setInbox(data);
+  }
+
+  async function fetchInbox(silent = false) {
+    if (!inbox) return;
+    if (!silent) $('refreshSpinner').classList.add('animate-spin');
+    try {
+      const data = await api(`/api/inbox?address=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}`);
+      inbox.expires_at = data.expires_at;
+      messages = data.messages || [];
+      renderList();
+    } catch (e) {
+      stopPolling();
+      toast('Inbox session expired — generating new address', '⚠️');
+      try { await createNew(); } catch {}
+    } finally {
+      if (!silent) setTimeout(() => $('refreshSpinner').classList.remove('animate-spin'), 400);
+    }
+  }
+
+  function renderList() {
+    const filter = ($('searchFilter').value || '').toLowerCase().trim();
+    const filtered = messages.filter(m => 
+      !filter || 
+      (m.subject && m.subject.toLowerCase().includes(filter)) || 
+      (m.sender && m.sender.toLowerCase().includes(filter))
+    );
+
+    $('msgCountBadge').textContent = messages.length;
+    $('inboxEmptyState').classList.toggle('hidden', filtered.length > 0);
+
+    $('msgList').innerHTML = filtered.map((m) => `
+      <li data-id="${m.id}" class="p-3.5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/60 transition ${m.id === selectedId ? 'bg-brand-50/80 dark:bg-brand-950/60 border-l-4 border-brand-500' : ''}">
+        <div class="flex items-center justify-between gap-2 mb-1">
+          <p class="text-xs font-semibold truncate text-slate-800 dark:text-slate-100">${esc(m.sender || 'Unknown Sender')}</p>
+          <span class="text-[10px] text-slate-400 dark:text-slate-500 shrink-0">${esc(fmtDate(m.received_at))}</span>
+        </div>
+        <p class="text-xs text-slate-600 dark:text-slate-300 font-medium truncate">${esc(m.subject || '(no subject)')}</p>
+      </li>
+    `).join('');
+  }
+
+  function showViewer(msg) {
+    currentMsg = msg;
+    $('viewerActive').classList.toggle('hidden', !msg);
+    $('viewerEmpty').classList.toggle('hidden', !!msg);
+    if (!msg) return;
+
+    $('vSubject').textContent = msg.subject || '(no subject)';
+    $('vFrom').textContent = msg.sender || 'unknown';
+    $('vTo').textContent = msg.recipient || inbox.address;
+    $('vDate').textContent = fmtDate(msg.received_at);
+
+    // Frame styling
+    $('vFrame').srcdoc = `<!doctype html><html><head><base target="_blank"><meta charset="utf-8">
+      <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; font-size: 14px; color: #1e293b; margin: 16px; word-wrap: break-word; line-height: 1.6; }
+        img { max-width: 100%; height: auto; border-radius: 8px; }
+        a { color: #4f46e5; text-decoration: underline; }
+        pre, code { background: #f1f5f9; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
+      </style>
+      </head><body>${msg.body_html || ''}</body></html>`;
+
+    $('containerPlainView').textContent = msg.body_text || '(empty message)';
+    applyViewMode(currentViewMode);
+  }
+
+  function applyViewMode(mode) {
+    currentViewMode = mode;
+    if (mode === 'html') {
+      $('containerHtmlView').classList.remove('hidden');
+      $('containerPlainView').classList.add('hidden');
+      $('tabHtmlView').className = 'px-3 py-1 rounded-lg bg-white dark:bg-brand-600 text-brand-700 dark:text-white shadow-sm transition';
+      $('tabPlainView').className = 'px-3 py-1 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition';
+    } else {
+      $('containerHtmlView').classList.add('hidden');
+      $('containerPlainView').classList.remove('hidden');
+      $('tabPlainView').className = 'px-3 py-1 rounded-lg bg-white dark:bg-brand-600 text-brand-700 dark:text-white shadow-sm transition';
+      $('tabHtmlView').className = 'px-3 py-1 rounded-lg text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition';
+    }
+  }
+
+  $('tabHtmlView').onclick = () => applyViewMode('html');
+  $('tabPlainView').onclick = () => applyViewMode('plain');
+
+  async function openMessage(id) {
+    selectedId = id;
+    renderList();
+    try {
+      const msg = await api(`/api/message?address=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}&id=${id}`);
+      showViewer(msg);
+    } catch (e) { toast(e.message, '⚠️'); }
+  }
+
+  function startPolling() {
+    stopPolling();
+    fetchInbox(true);
+    pollTimer = setInterval(() => { if (!document.hidden) fetchInbox(true); }, POLL_MS);
+  }
+  function stopPolling() { if (pollTimer) clearInterval(pollTimer); pollTimer = null; }
+
+  function updateCountdown() {
+    $('countdown').textContent = inbox ? fmtRemaining(inbox.expires_at - Date.now()) : '-';
+  }
+  setInterval(updateCountdown, 1000);
+
+  /* ---------------- Modal Helpers ---------------- */
+  const openModal = (id) => $(id).classList.remove('hidden');
+  const closeModal = (id) => $(id).classList.add('hidden');
+  document.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => closeModal(b.dataset.close)));
+  ['modalCustomEmail', 'modalSavedInboxes', 'modalRecover', 'modalAdmin'].forEach((id) => {
+    $(id).addEventListener('click', (e) => { if (e.target === $(id)) closeModal(id); });
+  });
+
+  /* ---------------- Custom Subdomain Preview & Creation ---------------- */
+  function updateCustomPreview() {
+    const user = ($('inputCustomUser').value || '').trim() || 'myaccount';
+    const sub = ($('inputCustomSubdomain').value || '').trim().replace(/[^a-z0-9-]/gi, '');
+    const base = $('selectBaseDomain').value || (domains[0] || 'temone.skin');
+    const domainPart = sub ? `${sub}.${base}` : base;
+    $('customAddressPreview').textContent = `${user}@${domainPart}`.toLowerCase();
+  }
+
+  $('inputCustomUser').oninput = updateCustomPreview;
+  $('inputCustomSubdomain').oninput = updateCustomPreview;
+  $('selectBaseDomain').onchange = updateCustomPreview;
+
+  $('btnOpenCustomModal').onclick = () => {
+    updateCustomPreview();
+    openModal('modalCustomEmail');
+  };
+
+  $('btnSubmitCustomEmail').onclick = async () => {
+    const user = ($('inputCustomUser').value || '').trim();
+    const sub = ($('inputCustomSubdomain').value || '').trim();
+    const base = $('selectBaseDomain').value;
+
+    if (!user) { toast('Please specify a username', '⚠️'); return; }
+    try {
+      await createNew(user, sub, base);
+      closeModal('modalCustomEmail');
+      toast('Custom email created successfully', '🎨');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  /* ---------------- Saved Inboxes Management ---------------- */
+  function getSavedInboxes() {
+    try { return JSON.parse(localStorage.getItem(LS_SAVED) || '[]'); } catch { return []; }
+  }
+
+  function updateSavedBadge() {
+    const list = getSavedInboxes();
+    const badge = $('savedCountBadge');
+    badge.textContent = list.length;
+    badge.classList.toggle('hidden', list.length === 0);
+  }
+
+  $('btnSaveCurrent').onclick = () => {
+    if (!inbox) return;
+    const list = getSavedInboxes().filter(i => i.address !== inbox.address);
+    list.unshift({ address: inbox.address, token: inbox.token, expires_at: inbox.expires_at, saved_at: Date.now() });
+    localStorage.setItem(LS_SAVED, JSON.stringify(list.slice(0, 20)));
+    updateSavedBadge();
+    toast('Inbox saved for quick switching', '💾');
+  };
+
+  $('btnOpenSaved').onclick = () => {
+    const list = getSavedInboxes();
+    const ul = $('savedInboxesList');
+    ul.innerHTML = '';
+    $('savedEmptyState').classList.toggle('hidden', list.length > 0);
+
+    list.forEach((item) => {
+      const isCurrent = inbox && inbox.address === item.address;
+      const li = document.createElement('li');
+      li.className = 'py-2.5 flex items-center justify-between gap-2';
+      li.innerHTML = `
+        <div class="truncate cursor-pointer flex-1">
+          <p class="text-xs font-mono font-bold text-slate-800 dark:text-slate-100 truncate">${esc(item.address)}</p>
+          <p class="text-[10px] text-slate-400">Expires in: ${fmtRemaining(item.expires_at - Date.now())}</p>
+        </div>
+        <div class="flex items-center gap-1.5 shrink-0">
+          ${isCurrent ? '<span class="text-[10px] bg-emerald-500 text-white font-bold px-2 py-0.5 rounded-full">Active</span>' : `<button data-switch="${esc(item.address)}" class="px-2.5 py-1 text-xs rounded-lg bg-brand-600 text-white font-semibold hover:bg-brand-700">Switch</button>`}
+          <button data-del-saved="${esc(item.address)}" class="p-1 text-slate-400 hover:text-red-500 text-sm">&times;</button>
+        </div>
+      `;
+      ul.appendChild(li);
+    });
+
+    ul.querySelectorAll('[data-switch]').forEach(btn => {
+      btn.onclick = async () => {
+        const item = list.find(x => x.address === btn.dataset.switch);
+        if (item) {
+          try {
+            await restore(item.address, item.token);
+            closeModal('modalSavedInboxes');
+            toast('Switched inbox', '🔄');
+          } catch (e) { toast(e.message, '⚠️'); }
+        }
+      };
+    });
+
+    ul.querySelectorAll('[data-del-saved]').forEach(btn => {
+      btn.onclick = () => {
+        const updated = list.filter(x => x.address !== btn.dataset.delSaved);
+        localStorage.setItem(LS_SAVED, JSON.stringify(updated));
+        $('btnOpenSaved').click();
+        updateSavedBadge();
+      };
+    });
+
+    openModal('modalSavedInboxes');
+  };
+
+  /* ---------------- Recovery Modal ---------------- */
+  $('btnOpenRecover').onclick = () => openModal('modalRecover');
+  $('btnSubmitRecover').onclick = async () => {
+    const raw = ($('recoverInput').value || '').trim();
+    if (!raw) return;
+    try {
+      if (raw.includes('http') || raw.includes('mail=')) {
+        const u = new URL(raw);
+        await restore(u.searchParams.get('mail'), u.searchParams.get('token'));
+      } else {
+        toast('Please paste a full Access Link', '⚠️');
+        return;
+      }
+      closeModal('modalRecover');
+      toast('Inbox restored successfully', '✅');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  /* ---------------- Core Action Buttons ---------------- */
+  $('btnCopyAddress').onclick = () => inbox && copyText(inbox.address, 'Email address copied!');
+  $('btnCopyAccessLink').onclick = () => inbox && copyText(accessUrl(), 'Access link copied — keep it safe!');
+  $('btnRefreshInbox').onclick = () => { fetchInbox(); toast('Inbox refreshed', '🔄'); };
+
+  $('btnNewRandom').onclick = async () => {
+    try {
+      await createNew();
+      toast('New random temporary email generated', '✨');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  $('btnDeleteInbox').onclick = async () => {
+    if (!inbox || !confirm('Permanently delete this inbox and all incoming messages now?')) return;
+    triggerPopunder();
+    try {
+      await api(`/api/inbox?address=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}`, { method: 'DELETE' });
+      await createNew();
+      toast('Inbox permanently deleted', '🗑️');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  $('validitySelect').onchange = async () => {
+    if (!inbox) return;
+    triggerPopunder();
+    try {
+      const data = await api('/api/extend', {
+        method: 'POST',
+        body: { address: inbox.address, token: inbox.token, validity: $('validitySelect').value }
+      });
+      inbox.expires_at = data.expires_at;
+      saveInbox();
+      updateCountdown();
+      toast(`Validity updated to ${$('validitySelect').value}`, '⏳');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  $('searchFilter').oninput = renderList;
+
+  $('msgList').onclick = (e) => {
+    const li = e.target.closest('li[data-id]');
+    if (li) openMessage(Number(li.dataset.id));
+  };
+
+  $('btnDeleteCurrentMsg').onclick = async () => {
+    if (selectedId == null) return;
+    try {
+      await api(`/api/message?address=${encodeURIComponent(inbox.address)}&token=${encodeURIComponent(inbox.token)}&id=${selectedId}`, { method: 'DELETE' });
+      selectedId = null;
+      showViewer(null);
+      fetchInbox();
+      toast('Message deleted', '🗑️');
+    } catch (e) { toast(e.message, '⚠️'); }
+  };
+
+  /* ---------------- Triple-Click Admin Panel ---------------- */
+  let clickCount = 0;
+  let clickTimer = null;
+  $('secretAdminTrigger').onclick = () => {
+    clickCount++;
+    if (clickTimer) clearTimeout(clickTimer);
+    if (clickCount >= 3) {
+      clickCount = 0;
+      try { $('aSecret').value = sessionStorage.getItem('tm_admin') || ''; } catch {}
+      openModal('modalAdmin');
+    } else {
+      clickTimer = setTimeout(() => { clickCount = 0; }, 600);
+    }
+  };
+
+  $('btnAdminLoad').onclick = async () => {
+    const err = $('aError');
+    err.classList.add('hidden');
+    let adminSecret = $('aSecret').value.trim();
+    try {
+      const data = await api('/api/admin/settings', { admin: adminSecret });
+      document.querySelectorAll('#formAdmin [data-key]').forEach((el) => {
+        el.value = data.settings[el.dataset.key] ?? '';
+      });
+      try { sessionStorage.setItem('tm_admin', adminSecret); } catch {}
+      $('formAdmin').classList.remove('hidden');
+      try {
+        const st = await api('/api/admin/stats', { admin: adminSecret });
+        $('aStats').textContent = `Active Inboxes: ${st.active_inboxes} | Stored Messages: ${st.stored_messages}`;
+      } catch {}
+    } catch (ex) {
+      $('formAdmin').classList.add('hidden');
+      err.textContent = ex.message;
+      err.classList.remove('hidden');
+    }
+  };
+
+  $('formAdmin').onsubmit = async (e) => {
+    e.preventDefault();
+    const payload = {};
+    document.querySelectorAll('#formAdmin [data-key]').forEach((el) => {
+      payload[el.dataset.key] = el.value;
+    });
+    let adminSecret = $('aSecret').value.trim();
+    try {
+      const data = await api('/api/admin/settings', {
+        method: 'PUT',
+        admin: adminSecret,
+        body: { settings: payload }
+      });
+      settings = data.settings;
+      popunderLoaded = false;
+      $('siteName').textContent = settings.site_name || 'EM-TempMail';
+      loadSettings();
+      toast('Admin settings updated successfully', '✅');
+    } catch (ex) { toast(ex.message, '⚠️'); }
+  };
+
+  /* ---------------- Application Bootstrap ---------------- */
+  async function init() {
+    initTheme();
+    await loadSettings();
+
+    const params = new URLSearchParams(location.search);
+    const qMail = params.get('mail');
+    const qToken = params.get('token');
+
+    if (qMail && qToken) {
+      try {
+        await restore(qMail, qToken);
+        return;
+      } catch {
+        toast('Access link is invalid or expired', '⚠️');
+      }
+    }
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(LS_INBOX) || 'null');
+      if (saved && saved.address && saved.token) {
+        await restore(saved.address, saved.token);
+        return;
+      }
+    } catch {}
+
+    try {
+      await createNew();
+    } catch (e) {
+      toast('Initialization error: ' + e.message, '⚠️');
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
